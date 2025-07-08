@@ -1,0 +1,34 @@
+import static java.lang.System.getenv
+
+buildscript {
+    ext.getProperty = { String propertyName, String environmentVariable ->
+        return project.hasProperty(propertyName) && !project.property(propertyName).isEmpty() ?
+                project.property(propertyName) : getenv(environmentVariable)
+    }
+
+    ext {
+        /**
+         * language
+         */
+        kotlinVersion = '1.9.0'
+        kspVersion = '1.9.0-1.0.13'
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+    }
+
+    dependencies {
+        classpath libs.gradle
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}

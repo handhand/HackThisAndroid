@@ -1,0 +1,8 @@
+//
+// Created by Ding Cheng DONG on 04/07/2025 A.
+//
+
+#ifndef HANDY_ANDROID_HACK_THIS_LIB_PATCH_DETECTION_H
+#define HANDY_ANDROID_HACK_THIS_LIB_PATCH_DETECTION_H
+extern "C" int start_lib_scan(void* arg);
+#endif //HANDY_ANDROID_HACK_THIS_LIB_PATCH_DETECTION_H

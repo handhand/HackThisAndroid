@@ -1,0 +1,17 @@
+//
+// Created by Ding Cheng DONG on 26/05/2025 A.
+//
+
+#ifndef HANDY_ANDROID_HACK_THIS_COMMON_H
+#define HANDY_ANDROID_HACK_THIS_COMMON_H
+
+#endif //HANDY_ANDROID_HACK_THIS_COMMON_H
+
+#define CODE_SECURE 0
+#define CODE_EMULATOR 1
+#define CODE_ROOTED 2
+#define CODE_FRIDA 3
+#define CODE_LIB_PATCH 4
+#define CODE_VERBOSE 100
+
+#define CHECK_TIME 20 // seconds
