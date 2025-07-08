@@ -76,8 +76,10 @@ fun RootView(
                 .background(Color.LightGray), text = "AndroidSecurityGuard")
             Text(viewModel.asgBasicMsg.value)
             Text(viewModel.asgFridaMsg.value)
+            Text(viewModel.asgLibPatchMsg.value)
             Text(viewModel.asgEmulatorMsg.value)
             Text(viewModel.asgRootMsg.value)
+            Text(viewModel.asgDebuggerMsg.value)
             Button(modifier = Modifier.padding(all = 12.dp)
                 .fillMaxWidth(), onClick = {viewModel.doSomeThing()}) {
                 Text(

@@ -8,5 +8,6 @@ interface JniCallback {
         const val ROOT = 2
         const val FRIDA = 3
         const val LIB_PATCH = 4
+        const val DEBUGGER = 5
     }
 }

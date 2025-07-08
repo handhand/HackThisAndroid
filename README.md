@@ -3,7 +3,7 @@ This project is for testing your Android security development skills, as well as
 
 ## 模块介绍
 ### SimpleRasp
-实现了几种检测Frida, root, emulator的简单方法，注意并没有把所有可能的防护策略都用上，比如没有在constructor启动、没有使用自定义的库函数等，可以作为一个入门级的hack练手
+实现了几种检测Frida、root、emulator的简单方法，注意并没有把所有可能的防护策略都用上，比如没有在constructor启动、没有使用自定义的库函数等，可以作为一个入门级的hack练手
 
 ### davincisec/FridaDetect - https://github.com/darvincisec/DetectFrida
 - 文章: https://darvincitech.wordpress.com/2019/12/23/detect-frida-for-android/
@@ -13,13 +13,17 @@ This project is for testing your Android security development skills, as well as
 
 ### AndroidSecurityGuard - https://github.com/aimardcr/AndroidNativeGuard
 - 关键的函数都自己重写了，见SecureAPI模块
+- 在Jni_OnLoad() 中启动检测
 - 使用dl_iterate_phdr来查看进程中加载的so，类似检查/proc/self/maps文件
 - named pipe应该检查不到了，注释掉了
 - 通过链接websocket来判断，但容易有false positive，见https://medium.com/@aimardcr/detecting-frida-the-right-way-7cb3227edafb
 - AntiLibPatch还没看到懂，有很多hardcode的数字和字符，原理估计类似于 SimpleRasp 的 lib_patch_detection.c
 
+### ProRasp
+- TODO: 结合所有的防护方法
+
 ### The dark side
-- frida-scripts文件夹里放的是破解检测的frida-script,主要是针对SimpleRasp的
+- frida-scripts文件夹里放的是破解检测的frida-script, 主要是针对SimpleRasp的
 
 ## 对一些防护方法的说明
 #### SimpleRasp 通过对比so文件的内容和内存中的代码来判断是否被hook
@@ -49,5 +53,6 @@ https://blog.csdn.net/qq_38851536/article/details/105087447
 
 ## TODO
 - 加上加固
+- 用assembly来创建线程
 - 加上ollvm
 - 加上SSL pinning

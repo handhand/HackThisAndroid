@@ -48,7 +48,7 @@ void addLog(std::string log, int code = 0) {
 
 // ==================== Callbacks ==================== //
 void onDebuggerDetected() {
-    addLog("Debugger detected", CODE_EMULATOR);
+    addLog("Debugger - DETECTED!", CODE_DEBUGGER);
 }
 
 void onFridaDetected() {
@@ -62,7 +62,7 @@ void onDumpDetected() {
 void onLibTampered(const char *libPath, uint32_t old_checksum, uint32_t new_checksum) {
     char log[1024];
     sprintf(log, "%s has been tampered, 0x%08X -> 0x%08X", libPath, old_checksum, new_checksum);
-    addLog(log);
+    addLog(log, CODE_LIB_PATCH);
 }
 
 // ==================== Main ==================== //
@@ -101,17 +101,6 @@ void AndroidNativeGuard() {
     }
 }
 
-/**
- * start the checking in constructor, before JNI_OnLoad
- */
-__attribute__((constructor))
-void startAndroidNativeGuard() {
-    // execute security initializer in a background thread,
-    // since AntiLibPatch constructor may take a significant time
-    // main thread may become unresponsive
-    std::thread(AndroidNativeGuard).detach();
-}
-
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     g_VM = vm;
 
@@ -122,10 +111,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     addLogMethod = env->GetStaticMethodID(clazz, "addLog", "(ILjava/lang/String;)V");
     mainActivityClass = (jclass)env->NewGlobalRef(clazz);
 
-//    // execute security initializer in a background thread,
-//    // since AntiLibPatch constructor may take a significant time
-//    // main thread may become unresponsive
-//    std::thread(AndroidNativeGuard).detach();
+    // execute security initializer in a background thread,
+    // since AntiLibPatch constructor may take a significant time
+    // main thread may become unresponsive
+    std::thread(AndroidNativeGuard).detach();
     // checking is started in constructor
 
     return JNI_VERSION_1_6;

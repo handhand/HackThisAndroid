@@ -27,7 +27,7 @@ project("SimpleRasp")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
-        simple_rasp.cpp
+        SimpleRasp/simple_rasp.cpp
         SimpleRasp/frida_detection.cpp
         SimpleRasp/root_detection.cpp
         SimpleRasp/frida_function_hook_detection.cpp
