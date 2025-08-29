@@ -7,6 +7,10 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.ServerSocket
 
+/**
+ * Jni interface for SimpleRasp
+ * jniCallback will be called by Jni
+ */
 class RaspInterface(private val jniCallback: JniCallback) {
 
     init {
@@ -16,7 +20,6 @@ class RaspInterface(private val jniCallback: JniCallback) {
     companion object {
         init {
             System.loadLibrary("SimpleRasp")
-//            System.loadLibrary("DetectFrida")
         }
 
         const val PORT = 12345
@@ -26,8 +29,14 @@ class RaspInterface(private val jniCallback: JniCallback) {
 
     external fun entryPoint(): String
 
+    /**
+     * Start the protection
+     */
     external fun startRuntimeApplicationSelfProtection(jniCallback: JniCallback)
 
+    /**
+     * Start listen for the socket, the result of the lib modification will be sent by socket
+     */
     private fun start() {
         Thread {
             listenForResult()

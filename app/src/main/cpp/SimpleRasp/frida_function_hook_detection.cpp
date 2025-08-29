@@ -1,12 +1,15 @@
 //
 // Created by Ding Cheng DONG on 16/05/2025 A.
-// https://github.com/darvincisec/DetectFrida/blob/master/app/src/main/c/native-lib.c
 //
 #include <jni.h>
 #include <string>
 #include <dlfcn.h>
 #include "dlfcn/local_dlfcn.h"
 
+/**
+ * Check if "pthread_create" is hooked
+ * @return true if the method is hooked
+ */
 bool check_inlinehook() {
     // 根据系统架构选择对应的libc.so库路径
     const char *lib_path;

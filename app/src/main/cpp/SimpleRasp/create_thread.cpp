@@ -5,9 +5,13 @@
 #include <stdlib.h>
 #include "include/create_thread.h"
 
-//
-// Created by Ding Cheng DONG on 03/07/2025 A.
-//
+/**
+ * Create a thread by using clone.
+ * In case of the pthread_create function is tempered.
+ *
+ * @param child_func
+ * @return
+ */
 int create_thread(int (* child_func)(void*)) {
     // Allocate stack for child task.
     const int STACK_SIZE = 65536;

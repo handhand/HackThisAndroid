@@ -36,6 +36,11 @@ void callback(JNIEnv* env, void* arg, jmethodID callbackMethod, int code, const 
     env->DeleteLocalRef(message);
 }
 
+/**
+ * Perform checking:
+ * 1. check emulator
+ * 2. check frida hooking by process files
+ */
 void* doCheck(void* arg) {
     // prepare jni env for thread
     JNIEnv* env = nullptr;
@@ -59,7 +64,7 @@ void* doCheck(void* arg) {
             callback(env, arg, callbackMethod, CODE_EMULATOR, "Emulator detection - PASS");
         }
 
-        LOGD("check pthread_create hooking");
+        LOGD("Check frida is running");
         if (check_status() || check_maps()) {
             callback(env, arg, callbackMethod, CODE_FRIDA, "Frida - DETECTED");
         } else {
@@ -103,7 +108,7 @@ Java_com_handhandlab_handyAndroidHackThis_jni_RaspInterface_startRuntimeApplicat
         LOGD("pthread_create is hooked");
         jclass callbackClass = env->GetObjectClass(jniCallback);
         jmethodID callbackMethod = env->GetMethodID(callbackClass, "onJniCallback", "(ILjava/lang/String;)V");
-        jstring message = env->NewStringUTF("Method hooked detected");
+        jstring message = env->NewStringUTF("pthread_create hooked detected");
         env->CallVoidMethod(jniCallback, callbackMethod, CODE_FRIDA, message);
     }
 

@@ -67,6 +67,14 @@ static inline void detect_frida_loop(void *pargs);
 
 static void(* libScanCallback)(int) = NULL;
 
+/**
+ * Check if the so is tempered
+ * 1. read the /proc/self/maps to get the path of the library
+ * 2. read the program header to get the executable section offset and size, then calculate the checksum
+ * 3. read the /proc/self/maps to get the executable segment memory and calculate the checksum
+ * @param arg callback
+ * @return
+ */
 //__attribute__((constructor))
 int start_lib_scan(void* arg) {
     libScanCallback = arg;
@@ -115,6 +123,14 @@ static inline void parse_proc_maps_to_fetch_path(char **filepaths) {
     }
 }
 
+/**
+ * Fetch the executable segment offset and size from program header, and read the content to
+ * get the checksum.
+ *
+ * @param filePath
+ * @param pTextSection
+ * @return
+ */
 __attribute__((always_inline))
 static inline bool fetch_checksum_from_program_header(const char *filePath, execSegment **pTextSection) {
 
@@ -201,6 +217,17 @@ static inline unsigned long checksum(void *buffer, size_t len) {
     return seed;
 }
 
+/**
+ * Parse the /proc/self/maps to get the executable segment memory, and read that memory
+ * and calculate the checksum.
+ * Compare the checksum of the executable memory with the checksum of the executable segment on the
+ * file.
+ *
+ * @param map 
+ * @param pElfSectArr
+ * @param libraryName
+ * @return
+ */
 __attribute__((always_inline))
 static inline bool
 scan_executable_segments(char *map, execSegment *pElfSectArr, const char *libraryName) {
@@ -214,7 +241,7 @@ scan_executable_segments(char *map, execSegment *pElfSectArr, const char *librar
     if (buf[2] == 'x') {
         if (buf[0] == 'r') {
             uint8_t *buffer = NULL;
-
+            // start address on the memory
             buffer = (uint8_t *) start;
             __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "checkpoint: buffer:[%lx], offset:[%lx], memsize:[%lx]", buffer, pElfSectArr->offset, pElfSectArr->memsize);
             unsigned long output = checksum(buffer, pElfSectArr->memsize);
