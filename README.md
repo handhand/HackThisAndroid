@@ -47,6 +47,10 @@ https://blog.csdn.net/qq_38851536/article/details/105087447
 2. 使用clone来启动线程
 3. clone的线程调用jni会出错，暂时无法解决，先用socket来通知java检测结果
 
+#### Cert pinning
+点击按钮会请求baidu的网页，因为android默认的安全机制，一般情况下加了代理使用代理的证书后会请求失败；
+可以通过bypass_certpinning.js来绕过
+
 ## 参考
 - so startup description - http://www.dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
 - use clone to create thread - https://nullprogram.com/blog/2015/05/15/
@@ -55,4 +59,3 @@ https://blog.csdn.net/qq_38851536/article/details/105087447
 - 加上加固
 - 用assembly来创建线程
 - 加上ollvm
-- 加上SSL pinning

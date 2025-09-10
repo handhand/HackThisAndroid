@@ -1,5 +1,6 @@
 package com.handhandlab.handyAndroidHackThis
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +11,12 @@ import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.FRIDA
 import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.LIB_PATCH
 import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.ROOT
 import com.handhandlab.handyAndroidHackThis.jni.RaspInterface
+import com.handhandlab.handyAndroidHackThis.network.BaiduService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
 
 class HackThisViewModel: ViewModel() {
 
@@ -29,6 +34,19 @@ class HackThisViewModel: ViewModel() {
     val asgFridaMsg = mutableStateOf("Frida detection - PASS")
     val asgLibPatchMsg = mutableStateOf("Lib modification detection - PASS")
     val asgDebuggerMsg = mutableStateOf("Debugger detection - PASS")
+
+    val apiDataMsg = mutableStateOf("")
+
+    private lateinit var apiService: BaiduService
+    private var currentApiRequest: Job? = null
+
+    private fun initApiService() {
+        apiService = Retrofit.Builder()
+            .baseUrl("https://www.baidu.com")
+            .client(OkHttpClient())
+            .build()
+            .create(BaiduService::class.java)
+    }
 
     private val raspCallback: JniCallback = object : JniCallback {
         override fun onJniCallback(code: Int, message: String) {
@@ -83,13 +101,23 @@ class HackThisViewModel: ViewModel() {
 
     private val raspInterface = RaspInterface(raspCallback)
 
-    // TODO: move to application
     init {
+        // TODO: move to application
         AndroidSecurityGuard.jniCallback = asgCallback
         raspInterface.startRuntimeApplicationSelfProtection(raspCallback)
+        initApiService()
     }
 
     fun doSomeThing() {
-        raspInterface.entryPoint()
+        currentApiRequest?.cancel()
+        currentApiRequest = viewModelScope.launch {
+            try {
+                val responseString = apiService.query()
+                apiDataMsg.value = responseString.string()
+            } catch (e: Exception) {
+                apiDataMsg.value = e.message ?: "Unknown network error"
+            }
+
+        }
     }
 }

@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -83,8 +87,24 @@ fun RootView(
             Button(modifier = Modifier.padding(all = 12.dp)
                 .fillMaxWidth(), onClick = {viewModel.doSomeThing()}) {
                 Text(
-                    text = "TODO: make cert pinning https request")
+                    text = "Request Baidu.com")
             }
+
+            if (viewModel.apiDataMsg.value.isNotEmpty()) {
+                val scrollState = rememberScrollState()
+                Text("Api response:")
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .border(1.dp, color = Color.LightGray)
+                        .padding(8.dp)
+                ) {
+                    Text(viewModel.apiDataMsg.value)
+                }
+            }
+
         }
     }
 
