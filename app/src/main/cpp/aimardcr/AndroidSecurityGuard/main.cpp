@@ -48,11 +48,11 @@ void addLog(std::string log, int code = 0) {
 
 // ==================== Callbacks ==================== //
 void onDebuggerDetected() {
-    addLog("Debugger - DETECTED!", CODE_DEBUGGER);
+    addLog("DETECTED", CODE_DEBUGGER);
 }
 
 void onFridaDetected() {
-    addLog("Frida detected", CODE_FRIDA);
+    addLog("DETECTED - Frida is running on this device", CODE_FRIDA);
 }
 
 void onDumpDetected() {

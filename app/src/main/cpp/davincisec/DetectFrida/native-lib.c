@@ -63,7 +63,7 @@ static inline void parse_proc_maps_to_fetch_path(char **filepaths);
 
 static inline bool fetch_checksum_of_library(const char *filePath, execSection **pTextSection);
 
-static inline void detect_frida_loop(void *pargs);
+_Noreturn static inline void detect_frida_loop(void *pargs);
 
 static inline bool
 scan_executable_segments(char *map, execSection *pTextSection, const char *libraryName);
@@ -195,7 +195,7 @@ static inline bool fetch_checksum_of_library(const char *filePath, execSection *
 }
 
 
-void detect_frida_loop(void *pargs) {
+_Noreturn void detect_frida_loop(void *pargs) {
 
     struct timespec timereq;
     timereq.tv_sec = 5; //Changing to 5 seconds from 1 second

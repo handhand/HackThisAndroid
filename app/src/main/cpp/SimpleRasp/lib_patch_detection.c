@@ -31,12 +31,11 @@ typedef struct stExecSegment {
     unsigned long checksum;
 } execSegment;
 
-
-#define NUM_LIBS 1
+#define NUM_LIBS 2
 
 //Include more libs as per your need, but beware of the performance bottleneck especially
 //when the size of the libraries are > few MBs
-static const char *libstocheck[NUM_LIBS] = {"libSimpleRasp.so"};
+static const char *libstocheck[NUM_LIBS] = {"libc.so", "libSimpleRasp.so"};
 static execSegment *elfSectionArr[NUM_LIBS] = {NULL};
 
 
@@ -54,8 +53,8 @@ static inline void parse_proc_maps_to_fetch_path(char **filepaths);
 
 static inline bool fetch_checksum_from_program_header(const char *filePath, execSegment **pTextSection);
 
-static inline bool
-scan_executable_segments(char *map, execSegment *pTextSection, const char *libraryName);
+//static inline bool
+//scan_executable_segments(char *map_entry, execSegment *pTextSection, const char *libraryName);
 
 static inline ssize_t read_one_line(int fd, char *buf, unsigned int max_len);
 
@@ -63,7 +62,7 @@ static inline unsigned long checksum(void *buffer, size_t len);
 
 static inline void detect_frida_memdiskcompare();
 
-static inline void detect_frida_loop(void *pargs);
+_Noreturn static inline void detect_frida_loop(void *pargs);
 
 static void(* libScanCallback)(int) = NULL;
 
@@ -88,7 +87,6 @@ int start_lib_scan(void* arg) {
         if (filePaths[i] != NULL)
             free(filePaths[i]);
     }
-
     detect_frida_loop(NULL);
     return 0;
 }
@@ -217,83 +215,138 @@ static inline unsigned long checksum(void *buffer, size_t len) {
     return seed;
 }
 
+///**
+// * Parse the /proc/self/maps to get the executable segment memory, and read that memory
+// * and calculate the checksum.
+// * Compare the checksum of the executable memory with the checksum of the executable segment on the
+// * file.
+// *
+// * @param map_entry
+// * @param pElfSectArr
+// * @param libraryName
+// * @return
+// */
+//__attribute__((always_inline))
+//static inline bool
+//scan_executable_segments(char *map_entry, execSegment *pElfSectArr, const char *libraryName) {
+//    unsigned long start, end;
+//    char buf[MAX_LINE] = "";
+//    char path[MAX_LENGTH] = "";
+//    char tmp[100] = "";
+//
+//    sscanf(map_entry, "%lx-%lx %s %s %s %s %s", &start, &end, buf, tmp, tmp, tmp, path);
+//
+//    if (buf[2] == 'x') {
+//        if (buf[0] == 'r') {
+//            uint8_t *buffer = NULL;
+//            // start address on the memory
+//            buffer = (uint8_t *) start;
+//            unsigned long  size = end - start;
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "checkpoint: buffer:[%lx], offset:[%lx], memsize:[%lx], cal size:[%lx], name:[%s]", buffer, pElfSectArr->offset, pElfSectArr->memsize, size, libraryName);
+//            unsigned long output = checksum(buffer, pElfSectArr->memsize);
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Checksum:[%ld][%ld]", output,
+//                                pElfSectArr->checksum);
+//
+//            if (output != pElfSectArr->checksum) {
+//                __android_log_print(ANDROID_LOG_VERBOSE, APPNAME,
+//                                    "Executable Section Manipulated, "
+//                                    "maybe due to Frida or other hooking framework."
+//                                    "Act Now!!!");
+//                libScanCallback(CODE_LIB_PATCH);
+//                return true;
+//            }
+//
+//        }
+//    }
+//    return false;
+//}
+
 /**
  * Parse the /proc/self/maps to get the executable segment memory, and read that memory
  * and calculate the checksum.
- * Compare the checksum of the executable memory with the checksum of the executable segment on the
- * file.
- *
- * @param map 
- * @param pElfSectArr
- * @param libraryName
- * @return
  */
 __attribute__((always_inline))
-static inline bool
-scan_executable_segments(char *map, execSegment *pElfSectArr, const char *libraryName) {
+static inline unsigned long
+cal_executable_map_entry_checksum(char *map_entry, const char *libraryName) {
     unsigned long start, end;
     char buf[MAX_LINE] = "";
     char path[MAX_LENGTH] = "";
     char tmp[100] = "";
 
-    sscanf(map, "%lx-%lx %s %s %s %s %s", &start, &end, buf, tmp, tmp, tmp, path);
+    sscanf(map_entry, "%lx-%lx %s %s %s %s %s", &start, &end, buf, tmp, tmp, tmp, path);
 
     if (buf[2] == 'x') {
         if (buf[0] == 'r') {
             uint8_t *buffer = NULL;
             // start address on the memory
             buffer = (uint8_t *) start;
-            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "checkpoint: buffer:[%lx], offset:[%lx], memsize:[%lx]", buffer, pElfSectArr->offset, pElfSectArr->memsize);
-            unsigned long output = checksum(buffer, pElfSectArr->memsize);
-            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Checksum:[%ld][%ld]", output,
-                                pElfSectArr->checksum);
-
-            if (output != pElfSectArr->checksum) {
-                __android_log_print(ANDROID_LOG_VERBOSE, APPNAME,
-                                    "Executable Section Manipulated, "
-                                    "maybe due to Frida or other hooking framework."
-                                    "Act Now!!!");
-                libScanCallback(CODE_LIB_PATCH);
-                return true;
-            }
-
+            unsigned long  size = end - start;
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "cal map entry: buffer:[%lx], cal size:[%lx], name:[%s]", buffer, size, libraryName);
+            unsigned long output = checksum(buffer, size);
+            return output;
         }
     }
-    return false;
+    return 0;
 }
 
 __attribute__((always_inline))
 static inline void detect_frida_memdiskcompare() {
     int fd = 0;
     char map[MAX_LINE];
-
+    bool isSecure = true;
     if ((fd = openat(AT_FDCWD, PROC_MAPS, O_RDONLY | O_CLOEXEC, 0)) != 0) {
-
-        while ((read_one_line(fd, map, MAX_LINE)) > 0) {
-            for (int i = 0; i < NUM_LIBS; i++) {
+        // scan the map file for each target lib
+        for (int i = 0; i < NUM_LIBS; i++) {
+            lseek(fd, 0, SEEK_SET);
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "-----check lib: %s------", libstocheck[i]);
+            unsigned long total_sum = 0;
+            // one lib could be separated to multiple rows in map (multiple segments in memory)
+            // esp when the lib is hooked
+            while ((read_one_line(fd, map, MAX_LINE)) > 0) {
                 if (strstr(map, libstocheck[i]) != NULL) {
-                    if (scan_executable_segments(map, elfSectionArr[i], libstocheck[i])) {
-                        break;
-                    }
+                    total_sum += cal_executable_map_entry_checksum(map, libstocheck[i]);
                 }
             }
+
+            // compare it to the disk checksum
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Checksum:[%ld][%ld]", total_sum,
+                                elfSectionArr[i]->checksum);
+
+            if (total_sum != elfSectionArr[i]->checksum) {
+                __android_log_print(ANDROID_LOG_VERBOSE, APPNAME,"Executable Section Manipulated, Act now!!");
+                isSecure = false;
+            }
         }
+
+
+//        while ((read_one_line(fd, map, MAX_LINE)) > 0) {
+//            for (int i = 0; i < NUM_LIBS; i++) {
+//                if (strstr(map, libstocheck[i]) != NULL) {
+//                    if (scan_executable_segments(map, elfSectionArr[i], libstocheck[i])) {
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     } else {
         __android_log_print(ANDROID_LOG_WARN, APPNAME,
                             "Error opening /proc/self/maps. That's usually a bad sign.");
-
+        isSecure = false;
     }
-    close(fd);
 
+    libScanCallback(isSecure ? 0 : 1);
+    close(fd);
 }
 
-void detect_frida_loop(void *pargs) {
+_Noreturn void detect_frida_loop(void *pargs) {
 
     struct timespec timereq;
     timereq.tv_sec = 5; //Changing to 5 seconds from 1 second
     timereq.tv_nsec = 0;
 
     while (true) {
+        __android_log_print(ANDROID_LOG_WARN, APPNAME,
+                            "-------------one loop-------------");
         detect_frida_memdiskcompare();
         nanosleep(&timereq, NULL);
     }

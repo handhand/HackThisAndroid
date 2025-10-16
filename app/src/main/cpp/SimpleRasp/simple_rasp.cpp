@@ -18,6 +18,8 @@
 #include "../common/common.h"
 #include "include/create_thread.h"
 #include "include/lib_patch_detection.h"
+#include "include/root_detection.h"
+
 #define PORT 12345
 
 JavaVM* gJavaVM = nullptr; // Global reference to JavaVM for JNI in another thread
@@ -55,21 +57,28 @@ void* doCheck(void* arg) {
 
     while(true) {
         if (isEmulator()) {
-            callback(env, arg, callbackMethod, CODE_EMULATOR, "Emulator - DETECTED!");
+            callback(env, arg, callbackMethod, CODE_EMULATOR, "DETECTED - Running on an emulator");
 //        LOGD("Emulator detected, exiting...");
             // Exit the process if an emulator is detected
 //        exit(0);
         } else {
             LOGD("No emulator detected.");
-            callback(env, arg, callbackMethod, CODE_EMULATOR, "Emulator detection - PASS");
+            callback(env, arg, callbackMethod, CODE_EMULATOR, "PASS - Running on a real device");
+        }
+
+        if (isRoot()) {
+            callback(env, arg, callbackMethod, CODE_ROOTED, "DETECTED - This device is rooted");
+        } else {
+            LOGD("No root detected.");
+            callback(env, arg, callbackMethod, CODE_ROOTED, "PASS - This device is not rooted");
         }
 
         LOGD("Check frida is running");
         if (check_status() || check_maps()) {
-            callback(env, arg, callbackMethod, CODE_FRIDA, "Frida - DETECTED");
+            callback(env, arg, callbackMethod, CODE_FRIDA, "DETECTED - Frida hooked our process");
         } else {
             LOGD("No frida detected.");
-            callback(env, arg, callbackMethod, CODE_FRIDA, "Frida detection - PASS");
+            callback(env, arg, callbackMethod, CODE_FRIDA, "PASS - Our process is not hooked");
         }
         sleep(CHECK_TIME);
     }
@@ -82,7 +91,6 @@ void* doCheck(void* arg) {
 
 void libPatchDetectionCallback(int result) {
     connect_local_socket(result);
-    LOGD("ok!");
 }
 
 int doLibPatchDetection(void* arg) {
@@ -108,7 +116,7 @@ Java_com_handhandlab_handyAndroidHackThis_jni_RaspInterface_startRuntimeApplicat
         LOGD("pthread_create is hooked");
         jclass callbackClass = env->GetObjectClass(jniCallback);
         jmethodID callbackMethod = env->GetMethodID(callbackClass, "onJniCallback", "(ILjava/lang/String;)V");
-        jstring message = env->NewStringUTF("pthread_create hooked detected");
+        jstring message = env->NewStringUTF("DETECTED - pthread_create hooked");
         env->CallVoidMethod(jniCallback, callbackMethod, CODE_FRIDA, message);
     }
 

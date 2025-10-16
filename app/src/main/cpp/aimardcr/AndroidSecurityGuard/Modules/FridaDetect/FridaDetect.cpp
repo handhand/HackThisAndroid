@@ -29,7 +29,7 @@ eSeverity FridaDetect::getSeverity() {
 bool FridaDetect::execute() {
     LOGI("FridaDetect::execute");
 
-    if (detectFridaAgent() /*|| detectFridaPipe()*/ /*|| detectFridaListener()*/) {
+    if (detectFridaAgent() || detectFridaPipe() || detectFridaListener()) {
         if (this->onFridaDetected) {
             time_t now = time(0);
             if (std::find(this->m_frida_times.begin(), this->m_frida_times.end(), now) == this->m_frida_times.end()) {

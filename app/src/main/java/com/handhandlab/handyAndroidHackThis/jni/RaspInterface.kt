@@ -1,6 +1,7 @@
 package com.handhandlab.handyAndroidHackThis.jni
 
 import android.util.Log
+import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.LIB_PATCH
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -55,7 +56,15 @@ class RaspInterface(private val jniCallback: JniCallback) {
                     val br = BufferedReader(InputStreamReader(socket.getInputStream()))
                     val message = br.readLine()
                     Log.d(TAG, "Received: $message")
-                    jniCallback.onJniCallback(message.toInt(), "Library modification - DETECTED!")
+                    try {
+                        if (message.toInt() == 0) {
+                            jniCallback.onJniCallback(LIB_PATCH, "PASS - Crucial libraries are clean")
+                        } else {
+                            jniCallback.onJniCallback(LIB_PATCH, "DETECTED - Crucial libraries are modified")
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
                     // Send response to client
                     val out = PrintWriter(socket.getOutputStream(), true)

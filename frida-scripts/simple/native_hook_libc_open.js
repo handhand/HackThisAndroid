@@ -1,5 +1,8 @@
+/**
+* This script can be used to test the SimpleRASP's LibPatch detection for libc.so
+*/
 function hook_open(){
-    var open_addr = Module.findExportByName("libc.so", "open");
+    var open_addr = Process.getModuleByName('libc.so').findExportByName("open");
     console.log("open_addr: ", open_addr);
     Interceptor.attach(open_addr,{
         onEnter:function(args){

@@ -9,5 +9,21 @@ interface JniCallback {
         const val FRIDA = 3
         const val LIB_PATCH = 4
         const val DEBUGGER = 5
+
+        const val STATUS_SECURE = 0
+        const val STATUS_WARNING = 1
+        const val STATUS_HIGH_RISK = 2
+        const val STATUS_INFO = 100
+
+        fun codeToString(code: Int): String {
+            return when (code) {
+                EMULATOR -> "Emulator"
+                ROOT -> "Root"
+                FRIDA -> "Frida"
+                LIB_PATCH -> "LibPatch"
+                DEBUGGER -> "Debugger"
+                else -> "Info"
+            }
+        }
     }
 }

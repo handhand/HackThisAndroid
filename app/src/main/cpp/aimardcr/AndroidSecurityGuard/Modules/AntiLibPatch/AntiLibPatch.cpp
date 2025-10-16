@@ -36,7 +36,12 @@ AntiLibPatch::AntiLibPatch(
                          uint32_t old_checksum,
                          uint32_t new_checksum)) : onLibTampered(callback) {
     LOGI("AntiLibPatch::AntiLibPatch");
+    // This initializes an ElfImg object for the dynamic linker (/linker),
+    // which is responsible for loading shared libraries in Android.
     SandHook::ElfImg linker(AY_OBFUSCATE("/linker"));
+
+    // This retrieves the address of the internal symbol __dl__ZL6solist from the dynamic linker.
+    // __dl__ZL6solist is a private symbol in the linker that points to the head of the linked list of loaded shared objects (so files).
     ElfW(Addr) soListAddress = linker.getSymbAddress(
             AY_OBFUSCATE("__dl__ZL6solist"));
 
