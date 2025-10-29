@@ -1,17 +1,17 @@
 /**
  * https://bbs.kanxue.com/thread-285932.htm
- * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/bypass_pthread_hook_detection.js
+ * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/native_bypass_pthread_hook_detection.js
  *
  * The result is Emulator and Frida detection will be bypassed
  */
-var clone = Module.findExportByName('libc.so', 'clone');
+var clone = Process.getModuleByName('libc.so').findExportByName('clone');
 Interceptor.attach(clone, {
     onEnter: function(args) {
         // args[3] 子线程的栈地址。如果这个值为 0，可能意味着没有指定栈地址
         if(args[3] != 0){
             var addr = args[3].add(96).readPointer()
             var so_name = Process.findModuleByAddress(addr).name;
-            var so_base = Module.getBaseAddress(so_name);
+            var so_base = Process.getModuleByName(so_name).base;
             var offset = (addr - so_base);
             console.log("===============>", so_name, addr,offset, offset.toString(16));
 

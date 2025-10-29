@@ -13,6 +13,7 @@
 #define CODE_FRIDA 3
 #define CODE_LIB_PATCH 4
 #define CODE_DEBUGGER 5
+#define CODE_PTHREAD_MODIFIED 6
 #define CODE_VERBOSE 100
 
 #define CHECK_TIME 20 // seconds

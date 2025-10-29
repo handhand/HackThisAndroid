@@ -109,15 +109,17 @@ Java_com_handhandlab_handyAndroidHackThis_jni_RaspInterface_startRuntimeApplicat
 
     pthread_t thread1;
     pthread_create(&thread1, nullptr, doCheck, globalCallback);
-    LOGD("After pthread_create");
 
-    LOGD("check method hook");
+    LOGD("check pthread_create hook");
+    jclass callbackClass = env->GetObjectClass(jniCallback);
+    jmethodID callbackMethod = env->GetMethodID(callbackClass, "onJniCallback", "(ILjava/lang/String;)V");
     if (check_inlinehook()) {
         LOGD("pthread_create is hooked");
-        jclass callbackClass = env->GetObjectClass(jniCallback);
-        jmethodID callbackMethod = env->GetMethodID(callbackClass, "onJniCallback", "(ILjava/lang/String;)V");
-        jstring message = env->NewStringUTF("DETECTED - pthread_create hooked");
-        env->CallVoidMethod(jniCallback, callbackMethod, CODE_FRIDA, message);
+        jstring message = env->NewStringUTF("DETECTED - pthread_create is hooked");
+        env->CallVoidMethod(jniCallback, callbackMethod, CODE_PTHREAD_MODIFIED, message);
+    } else {
+        jstring message = env->NewStringUTF("PASS - pthread_create is secured");
+        env->CallVoidMethod(jniCallback, callbackMethod, CODE_PTHREAD_MODIFIED, message);
     }
 
     LOGD("start custom thread for lib patch detection");

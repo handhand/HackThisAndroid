@@ -1,7 +1,7 @@
 /**
  * refer 1: https://bbs.kanxue.com/thread-285932.htm
  * refer 2: https://bbs.kanxue.com/thread-284838.htm
- * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/simple/hook_and_noop_pthread.js
+ * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/simple/native_noop_pthread.js
  * this script will
  * 1. hook android_dlopen_ext to detect the loading of the target SimpleRasp.so library
  * 2. After SimpleRasp.so is loaded, then hook the libc function pthread_create. Check the parameter of
@@ -10,7 +10,7 @@
  * The result is Emulator detection will be bypassed, and but pthread_create hooking will be detected.
  */
 function patchPthreadCreate(){
-    let pthread_create = Module.findExportByName(null, "pthread_create")
+    let pthread_create = Module.findGlobalExportByName("pthread_create")
     let originPthraedCreate = new NativeFunction(pthread_create, "int", ["pointer", "pointer", "pointer", "pointer"]);
     let hackPthraedCreate = new NativeCallback(function (a, b, c, d) {
         var m = Process.getModuleByName("libSimpleRasp.so");
@@ -27,7 +27,7 @@ function patchPthreadCreate(){
 
 Java.perform(function() {
     // hook dlopen will crash the process in emulator api 35.
-    var dlopen = Module.findExportByName(null, "android_dlopen_ext");
+    var dlopen = Module.findGlobalExportByName("android_dlopen_ext");
     if (dlopen) {
         var isLoaded = false;
         Interceptor.attach(dlopen, {

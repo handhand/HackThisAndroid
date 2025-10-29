@@ -9,6 +9,7 @@ interface JniCallback {
         const val FRIDA = 3
         const val LIB_PATCH = 4
         const val DEBUGGER = 5
+        const val PTHREAD_CREATE = 6
 
         const val STATUS_SECURE = 0
         const val STATUS_WARNING = 1
@@ -22,6 +23,7 @@ interface JniCallback {
                 FRIDA -> "Frida"
                 LIB_PATCH -> "LibPatch"
                 DEBUGGER -> "Debugger"
+                PTHREAD_CREATE -> "pthread_create"
                 else -> "Info"
             }
         }

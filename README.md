@@ -1,5 +1,8 @@
-## Handy Android Hack This!
+## Hack This Android!
 This project is for testing your Android security development skills, as well as your hacking skill.
+
+compatible with frida 17
+refer: https://stackoverflow.com/questions/79700740/frida-17-module-getexportbyname-typeerror-not-a-function
 
 ## 模块介绍
 ### SimpleRasp

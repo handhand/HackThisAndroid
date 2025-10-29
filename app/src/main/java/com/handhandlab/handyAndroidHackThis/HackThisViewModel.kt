@@ -1,5 +1,6 @@
 package com.handhandlab.handyAndroidHackThis
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,7 @@ class HackThisViewModel: ViewModel() {
         val raspCallback = object : JniCallback {
             override fun onJniCallback(code: Int, message: String) {
                 viewModelScope.launch(Dispatchers.Main) {
+                    Log.d("haha", "onJniCallback: $code $message")
                     simpleRaspResult.value = _simpleRaspResultList.addDetectionData(
                         DetectionData(
                             type = codeToString(code),
@@ -71,7 +73,7 @@ class HackThisViewModel: ViewModel() {
         DetectionData(codeToString(ROOT),  status = STATUS_WARNING),
         DetectionData(codeToString(FRIDA),  status = STATUS_WARNING)
     )
-    val simpleRaspResult = mutableStateOf(emptyList<DetectionData>())
+    val simpleRaspResult = mutableStateOf(_simpleRaspResultList.toList())
 
     // AndroidSecurityGuard won't send message if no suspicious is found, so default is PASS
     private val _asgResultList = mutableListOf(
