@@ -1,9 +1,9 @@
-package com.handhandlab.handyAndroidHackThis.model
+package com.handhandlab.hackThisAndroid.model
 
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_HIGH_RISK
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_INFO
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_SECURE
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_WARNING
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_HIGH_RISK
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_INFO
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_SECURE
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_WARNING
 
 data class DetectionData(
 //    val source: String,

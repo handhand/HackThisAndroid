@@ -1,6 +1,6 @@
 /**
  * This script NOOP the System.loadLibrary function, and hook the jni method in Java space.
- * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/hook_java_system_loadlibrary.js
+ * Usage: frida -U -f com.handhandlab.hackThisAndroid -l frida-scripts/java_hook_system_loadlibrary.js
  **/
 Java.perform(function() {
     // Retrieve the class with Java.use

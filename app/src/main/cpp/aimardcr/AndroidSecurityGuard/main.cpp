@@ -107,7 +107,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **)&env, JNI_VERSION_1_6);
 
-    jclass clazz = env->FindClass("com/handhandlab/handyAndroidHackThis/AndroidSecurityGuard");
+    jclass clazz = env->FindClass("com/handhandlab/hackThisAndroid/AndroidSecurityGuard");
     addLogMethod = env->GetStaticMethodID(clazz, "addLog", "(ILjava/lang/String;)V");
     mainActivityClass = (jclass)env->NewGlobalRef(clazz);
 

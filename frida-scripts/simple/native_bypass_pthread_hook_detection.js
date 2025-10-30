@@ -1,6 +1,6 @@
 /**
  * https://bbs.kanxue.com/thread-285932.htm
- * Usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/native_bypass_pthread_hook_detection.js
+ * Usage: frida -U -f com.handhandlab.hackThisAndroid -l frida-scripts/native_bypass_pthread_hook_detection.js
  *
  * The result is Emulator and Frida detection will be bypassed
  */

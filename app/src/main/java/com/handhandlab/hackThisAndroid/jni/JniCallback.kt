@@ -1,4 +1,4 @@
-package com.handhandlab.handyAndroidHackThis.jni
+package com.handhandlab.hackThisAndroid.jni
 
 interface JniCallback {
     fun onJniCallback(code: Int, message: String);

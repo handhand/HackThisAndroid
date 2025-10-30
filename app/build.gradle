@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.handhandlab.handyAndroidHackThis'
+    namespace 'com.handhandlab.hackThisAndroid'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.handhandlab.handyAndroidHackThis"
+        applicationId "com.handhandlab.hackThisAndroid"
         minSdk 28
         targetSdk 35
         versionCode 1

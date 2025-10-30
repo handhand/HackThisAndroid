@@ -1,6 +1,6 @@
-package com.handhandlab.handyAndroidHackThis
+package com.handhandlab.hackThisAndroid
 
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback
+import com.handhandlab.hackThisAndroid.jni.JniCallback
 
 class AndroidSecurityGuard {
 

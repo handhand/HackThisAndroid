@@ -1,10 +1,9 @@
-package com.handhandlab.handyAndroidHackThis
+package com.handhandlab.hackThisAndroid
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,19 +44,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_HIGH_RISK
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_SECURE
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.STATUS_WARNING
-import com.handhandlab.handyAndroidHackThis.model.DetectionData
-import com.handhandlab.handyAndroidHackThis.theme.ExperimentsTheme
-import com.handhandlab.handyAndroidHackThis.theme.Purple80
-import com.handhandlab.handyAndroidHackThis.theme.PurpleGrey80
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_HIGH_RISK
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_SECURE
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_WARNING
+import com.handhandlab.hackThisAndroid.model.DetectionData
+import com.handhandlab.hackThisAndroid.theme.ExperimentsTheme
+import com.handhandlab.hackThisAndroid.theme.Purple80
+import com.handhandlab.hackThisAndroid.theme.PurpleGrey80
 
 class MainActivity : ComponentActivity() {
 

@@ -28,7 +28,7 @@ static int connect_local_socket(int code);
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_handhandlab_handyAndroidHackThis_jni_RaspInterface_entryPoint(JNIEnv *env, jobject thiz) {
+Java_com_handhandlab_hackThisAndroid_jni_RaspInterface_entryPoint(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF("Hello from C++");
 }
 
@@ -100,7 +100,7 @@ int doLibPatchDetection(void* arg) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_handhandlab_handyAndroidHackThis_jni_RaspInterface_startRuntimeApplicationSelfProtection(JNIEnv *env, jobject thiz, jobject jniCallback) {
+Java_com_handhandlab_hackThisAndroid_jni_RaspInterface_startRuntimeApplicationSelfProtection(JNIEnv *env, jobject thiz, jobject jniCallback) {
     // Store the JavaVM reference
     env->GetJavaVM(&gJavaVM);
     // Create a global reference for the callback

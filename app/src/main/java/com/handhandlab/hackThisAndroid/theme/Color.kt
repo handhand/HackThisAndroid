@@ -1,4 +1,4 @@
-package com.handhandlab.handyAndroidHackThis.theme
+package com.handhandlab.hackThisAndroid.theme
 
 import androidx.compose.ui.graphics.Color
 

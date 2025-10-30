@@ -1,7 +1,7 @@
 /**
  * This script does not modify any behavior, only log the native method calls.
  * It can be used to test the SimpleRASP's frida detection, as well as the LibPatch detection for libc.so
- * usage: frida -U -f com.handhandlab.handyAndroidHackThis -l frida-scripts/simple/native_hook_libc_open.js
+ * usage: frida -U -f com.handhandlab.hackThisAndroid -l frida-scripts/simple/native_hook_libc_open.js
  */
 function hook_open(){
     var open_addr = Process.getModuleByName('libc.so').findExportByName("open");

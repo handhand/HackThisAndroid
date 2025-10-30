@@ -1,7 +1,7 @@
-package com.handhandlab.handyAndroidHackThis.jni
+package com.handhandlab.hackThisAndroid.jni
 
 import android.util.Log
-import com.handhandlab.handyAndroidHackThis.jni.JniCallback.Companion.LIB_PATCH
+import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.LIB_PATCH
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

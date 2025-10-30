@@ -1,4 +1,4 @@
-package com.handhandlab.handyAndroidHackThis.network
+package com.handhandlab.hackThisAndroid.network
 
 import okhttp3.ResponseBody
 import retrofit2.http.GET

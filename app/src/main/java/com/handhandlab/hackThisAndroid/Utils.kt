@@ -1,4 +1,4 @@
-package com.handhandlab.handyAndroidHackThis
+package com.handhandlab.hackThisAndroid
 
 import android.content.Context
 import android.graphics.Bitmap
