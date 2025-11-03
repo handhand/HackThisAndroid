@@ -1,10 +1,10 @@
-使用dl_iterate_phdr，实测AndroidSecurityGuard的FridaDetect可以检测到 /memfd:frida-agent-64.so (deleted)
-
-### `dl_iterate_phdr`
+### 使用`dl_iterate_phdr`检测进程中加载的so
 
 `dl_iterate_phdr` is a function provided by the GNU C Library that allows you to iterate over all shared objects (shared libraries) currently loaded into the process's address space. 
 
 It is commonly used for inspecting loaded libraries, analyzing memory regions, or detecting specific libraries.
+
+使用dl_iterate_phdr，实测AndroidSecurityGuard的FridaDetect可以检测到 /memfd:frida-agent-64.so (deleted)
 
 #### Function Signature:
 ```c
