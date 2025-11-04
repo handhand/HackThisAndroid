@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,11 +42,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_HIGH_RISK
 import com.handhandlab.hackThisAndroid.jni.JniCallback.Companion.STATUS_SECURE
@@ -115,30 +118,41 @@ fun RootView(
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            var tabIndex by remember { mutableIntStateOf(0) }
-            val tabList = arrayOf("Simple RASP", "AndroidSecurityGuard", "HTTP Request")
-            TabRow(
-                modifier = Modifier.fillMaxWidth(),
-                selectedTabIndex = tabIndex
-            ) {
-                tabList.forEachIndexed { index, title ->
-                    Tab(
-                        text = { Text(title) },
-                        selected = tabIndex == index,
-                        onClick = {
-                            tabIndex = index
-                        }
-                    )
+        Box(Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.padding(paddingValues)) {
+                var tabIndex by remember { mutableIntStateOf(0) }
+                val tabList = arrayOf("Simple RASP", "AndroidSecurityGuard", "HTTP Request")
+                TabRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    selectedTabIndex = tabIndex
+                ) {
+                    tabList.forEachIndexed { index, title ->
+                        Tab(
+                            text = { Text(title) },
+                            selected = tabIndex == index,
+                            onClick = {
+                                tabIndex = index
+                            }
+                        )
+                    }
+                }
+                when(tabIndex) {
+                    0 -> ListView(viewModel.simpleRaspResult.value)
+                    1 -> ListView(viewModel.asgResult.value)
+                    2 -> NetworkRequestView(viewModel)
                 }
             }
-            when(tabIndex) {
-                0 -> ListView(viewModel.simpleRaspResult.value)
-                1 -> ListView(viewModel.asgResult.value)
-                2 -> NetworkRequestView(viewModel)
-            }
-
+            Text(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(12.dp),
+                fontSize = 12.sp,
+                fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
+                color = Color.Gray,
+                text = "v${viewModel.getVersionName(LocalContext.current)}"
+            )
         }
+
     }
 
 }
