@@ -6,14 +6,6 @@ buildscript {
                 project.property(propertyName) : getenv(environmentVariable)
     }
 
-    ext {
-        /**
-         * language
-         */
-        kotlinVersion = '1.9.0'
-        kspVersion = '1.9.0-1.0.13'
-    }
-
     repositories {
         mavenCentral()
         google()
@@ -21,8 +13,8 @@ buildscript {
 
     dependencies {
         classpath libs.gradle
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
+        classpath libs.kotlin.gradle.plugin
+        classpath libs.kotlin.allopen
     }
 }
 

@@ -1,7 +1,7 @@
 [versions]
 agp = "8.3.2"
 converterGson = "2.11.0"
-gradle = "8.7.3"
+gradle = "8.8.2"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -42,6 +42,8 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
