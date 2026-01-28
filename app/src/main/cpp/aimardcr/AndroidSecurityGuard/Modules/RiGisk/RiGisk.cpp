@@ -59,6 +59,10 @@ bool RiGisk::execute() {
     SandHook::ElfImg linker(AY_OBFUSCATE("/linker"));
     solist = getStaticPointer<soinfo>(linker, AY_OBFUSCATE("__dl__ZL6solist"));
     somain = getStaticPointer<soinfo>(linker, AY_OBFUSCATE("__dl__ZL6somain"));
+
+    // TODO: in my android 16 devices solist and somain are NULL
+    if (solist == nullptr || somain == nullptr) return false;
+
     preloads = reinterpret_cast<std::vector<soinfo *> *>(linker.getSymbAddress(AY_OBFUSCATE("__dl__ZL13g_ld_preloads")));
     LOGI("RiGisk::execute solist: %p, somain: %p, preloads: %p", solist, somain, preloads);
 
